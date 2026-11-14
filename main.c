@@ -67,12 +67,12 @@ int main(void)
 
         case 0:
             cpu_state[4] = 1;
-            printf("pc = %d, command = %d, operand = no, acc = %d. The program is completed\n", cpu_state[0], cpu_state[2], cpu_state[1]);
+            printf("pc = %d, command = %d, operand = no. The program is completed\n", cpu_state[0], cpu_state[2]);
             break;
 
         default:
             cpu_state[4] = 1;
-            printf("pc = %d, command = %d, operand = no, acc = %d. The program is completed\n", cpu_state[0], cpu_state[2], cpu_state[1]);
+            printf("pc = %d, command = %d, operand = no. The program is completed\n", cpu_state[0], cpu_state[2]);
             break;
         }
     }

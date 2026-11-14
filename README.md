@@ -1,34 +1,46 @@
 # von-neumann-vm
+
 A simulation of the von Neumann architecture written in C.
 
 ### Basic Commands:
+
 ---
-'1' - increment the accumulator value by 1\
-'2' - decrement the accumulator value by 1\
-'3' - add the value from a memory cell (the next cell) to the accumulator
+
+'1' - Load accumulator from memory address\
+'2' - Add memory value to accumulator\
+'3' - Subtract memory value from accumulator\
+'0' - Halt program
 
 ## How to Use:
 
 **Example of `program.txt`**
+
 ```
-0 10 1 1 3 1 2 0
+0       - interrupt vector
+10 5 3  - data
+1 1     - opcode, address
+2 2     - opcode, address
+3 3     - opcode, address
+0       - halt program
 ```
 
 **Compiling**
+
 ```
 $ make
 ```
 
 **Running**
+
 ```
 $ ./main
 ```
 
 **Expected output**
+
 ```
-pc = 2, command = 1, operand = no, acc = 1
-pc = 3, command = 1, operand = no, acc = 2
-pc = 4, command = 3, operand = 1, acc = 12
-pc = 6, command = 2, operand = no, acc = 11
-pc = 7, command = 0, operand = no, acc = 11. The program is completed.
+pc = 4, command = 1, operand = 10, acc = 10
+pc = 6, command = 2, operand = 5, acc = 15
+pc = 8, command = 3, operand = 3, acc = 12
+pc = 10, command = 0, operand = no. The program is completed
 ```
