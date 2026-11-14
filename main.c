@@ -3,6 +3,7 @@
 #define MEMORY_SIZE 256
 
 int init_memory(int *memory);
+void print_info(int op_code, int *cpu_state, int operand_addr);
 
 int main(void)
 {
@@ -26,53 +27,65 @@ int main(void)
         return status;
     }
 
-    int addr;
+    int operand_addr = 0;
 
-    addr = 0;
-
-    cpu_state[0] = 4;         // адрес первой команды
+    cpu_state[0] = 9;         // адрес первой команды
     cpu_state[3] = memory[0]; // вектор прерываний
 
     while (cpu_state[4] == 0)
     {
-        cpu_state[2] = memory[cpu_state[0]]; // текущая команда
-        addr = memory[cpu_state[0] + 1];     // адрес операнда
-
-        if (cpu_state[2] != 0 && (addr < 0 || addr >= MEMORY_SIZE))
+        if (cpu_state[0] < 0 || cpu_state[0] >= MEMORY_SIZE)
         {
+            printf("pc = %d, command = %d, ERROR: out of bounds\n", cpu_state[0], cpu_state[2]);
             cpu_state[5] = 1;            // код ошибки
             cpu_state[0] = cpu_state[3]; // переход на вектор прерываний
+            continue;
+        }
+
+        cpu_state[2] = memory[cpu_state[0]];     // текущая команда
+        operand_addr = memory[cpu_state[0] + 1]; // адрес операнда
+
+        if (cpu_state[2] != 0 && (operand_addr < 0 || operand_addr >= MEMORY_SIZE))
+        {
             printf("pc = %d, command = %d, ERROR: out of bounds\n", cpu_state[0], cpu_state[2]);
+            cpu_state[5] = 1;
+            cpu_state[0] = cpu_state[3];
+            continue;
         }
 
         switch (cpu_state[2])
         {
-        case 1:
-            cpu_state[1] = memory[addr];
-            printf("pc = %d, command = %d, operand = %d, acc = %d\n", cpu_state[0], cpu_state[2], memory[addr], cpu_state[1]);
+        case 1: // LOAD
+            cpu_state[1] = memory[operand_addr];
+            print_info(1, cpu_state, operand_addr);
             cpu_state[0] += 2;
             break;
 
-        case 2:
-            cpu_state[1] += memory[addr];
-            printf("pc = %d, command = %d, operand = %d, acc = %d\n", cpu_state[0], cpu_state[2], memory[addr], cpu_state[1]);
+        case 2: // ADD
+            cpu_state[1] += memory[operand_addr];
+            print_info(2, cpu_state, operand_addr);
             cpu_state[0] += 2;
             break;
 
-        case 3:
-            cpu_state[1] -= memory[addr];
-            printf("pc = %d, command = %d, operand = %d, acc = %d\n", cpu_state[0], cpu_state[2], memory[addr], cpu_state[1]);
+        case 3: // SUB
+            cpu_state[1] -= memory[operand_addr];
+            print_info(3, cpu_state, operand_addr);
             cpu_state[0] += 2;
             break;
 
-        case 0:
+        case 4: // JUMP
+            print_info(4, cpu_state, operand_addr);
+            cpu_state[0] = operand_addr;
+            break;
+
+        case 0: // HALT
             cpu_state[4] = 1;
-            printf("pc = %d, command = %d, operand = no. The program is completed\n", cpu_state[0], cpu_state[2]);
+            print_info(0, cpu_state, 0);
             break;
 
         default:
             cpu_state[4] = 1;
-            printf("pc = %d, command = %d, operand = no. The program is completed\n", cpu_state[0], cpu_state[2]);
+            print_info(0, cpu_state, 0);
             break;
         }
     }
@@ -93,4 +106,33 @@ int init_memory(int *memory)
     fclose(f);
 
     return 0;
+}
+
+void print_info(int op_code, int *cpu_state, int operand_addr)
+{
+    switch (op_code)
+    {
+    case 1:
+        printf("pc = %d, command = %d (LOAD), operand: %d, acc = %d\n", cpu_state[0], cpu_state[2], operand_addr, cpu_state[1]);
+        break;
+
+    case 2:
+        printf("pc = %d, command = %d (ADD), operand = %d, acc = %d\n", cpu_state[0], cpu_state[2], operand_addr, cpu_state[1]);
+        break;
+
+    case 3:
+        printf("pc = %d, command = %d (SUB), operand = %d, acc = %d\n", cpu_state[0], cpu_state[2], operand_addr, cpu_state[1]);
+        break;
+
+    case 4:
+        printf("pc = %d, command = %d (JUMP), operand = %d\n", cpu_state[0], cpu_state[2], operand_addr);
+        break;
+
+    case 0:
+        printf("pc = %d, command = %d (HALT), operand = no. The program is completed\n", cpu_state[0], cpu_state[2]);
+        break;
+
+    default:
+        break;
+    }
 }
