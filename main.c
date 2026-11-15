@@ -29,7 +29,7 @@ int main(void)
 
     int operand_addr = 0;
 
-    cpu_state[0] = 9;         // адрес первой команды
+    cpu_state[0] = 4;         // адрес первой команды
     cpu_state[3] = memory[0]; // вектор прерываний
 
     while (cpu_state[4] == 0)
@@ -76,6 +76,14 @@ int main(void)
         case 4: // JUMP
             print_info(4, cpu_state, operand_addr);
             cpu_state[0] = operand_addr;
+            break;
+
+        case 5: // JUMP IF ZERO
+            print_info(5, cpu_state, operand_addr);
+            if (cpu_state[1] == 0)
+                cpu_state[0] = operand_addr;
+            else
+                cpu_state[0] += 2;
             break;
 
         case 0: // HALT
@@ -126,6 +134,10 @@ void print_info(int op_code, int *cpu_state, int operand_addr)
 
     case 4:
         printf("pc = %d, command = %d (JUMP), operand = %d\n", cpu_state[0], cpu_state[2], operand_addr);
+        break;
+
+    case 5:
+        printf("pc = %d, command = %d (JUMP IF ZERO), operand = %d, acc = %d\n", cpu_state[0], cpu_state[2], operand_addr, cpu_state[1]);
         break;
 
     case 0:
