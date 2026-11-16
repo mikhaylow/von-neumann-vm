@@ -18,12 +18,13 @@ A simulation of the von Neumann architecture written in C.
 **Example of `program.txt`**
 
 ```
-16
-3 1 0
+15
+2 1 0
 1 1
+2 2
 3 2
 5 14
-4 6
+4 8
 0
 0
 ```
@@ -43,14 +44,15 @@ $ ./main
 **Expected output**
 
 ```
-pc = 4, command = 1 (LOAD), operand: 1, acc = 3
-pc = 6, command = 3 (SUB), operand = 2, acc = 2
-pc = 8, command = 5 (JUMP IF ZERO), operand = 14, acc = 2
-pc = 10, command = 4 (JUMP), operand = 6
-pc = 6, command = 3 (SUB), operand = 2, acc = 1
-pc = 8, command = 5 (JUMP IF ZERO), operand = 14, acc = 1
-pc = 10, command = 4 (JUMP), operand = 6
-pc = 6, command = 3 (SUB), operand = 2, acc = 0
-pc = 8, command = 5 (JUMP IF ZERO), operand = 14, acc = 0
+pc = 4, command = 1 (LOAD), operand: 1, acc = 2
+pc = 6, command = 2 (ADD), operand = 2, acc = 3
+pc = 8, command = 3 (SUB), operand = 2, acc = 2
+pc = 10, command = 5 (JUMP IF ZERO), operand = 14, acc = 2
+pc = 12, command = 4 (JUMP), operand = 8
+pc = 8, command = 3 (SUB), operand = 2, acc = 1
+pc = 10, command = 5 (JUMP IF ZERO), operand = 14, acc = 1
+pc = 12, command = 4 (JUMP), operand = 8
+pc = 8, command = 3 (SUB), operand = 2, acc = 0
+pc = 10, command = 5 (JUMP IF ZERO), operand = 14, acc = 0
 pc = 14, command = 0 (HALT), operand = no. The program is completed
 ```
